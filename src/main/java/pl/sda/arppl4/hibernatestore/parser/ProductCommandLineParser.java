@@ -8,6 +8,7 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class ProductCommandLineParser {
@@ -25,18 +26,71 @@ public class ProductCommandLineParser {
         String command;
 
         do {
-            System.out.println("Command: add, list, ");
+            System.out.println("Command: add, list, delete, update / quit to finish ");
             command = scanner.next();
 
             if (command.equalsIgnoreCase("add")){
                 handleAddCommand();
             } else if (command.equalsIgnoreCase("list")){
                 handleListCommand();
+            } else if (command.equalsIgnoreCase("delete")){
+                handleDeleteCommand();
+            } else if (command.equalsIgnoreCase("update")){
+                handleUpdateCommand();
             }
 
         } while (!command.equals("quit"));
 
     }
+
+    private void handleUpdateCommand() {
+        System.out.println("Provide the id of the product you want to update");
+        Long id = scanner.nextLong();
+
+        Optional<Product> productOptional = dao.zwrocProduct(id);
+        if (productOptional.isPresent()) {
+            Product product = productOptional.get();
+
+            System.out.println("tell what you want to change: price, expiryDate, quantity");
+            String change = scanner.next();
+
+            switch (change){
+                case "name":
+                    System.out.println("provide price");
+                    Double price = scanner.nextDouble();
+                    product.setPrice(price);
+                    break;
+                case "expriryDate":
+                    LocalDate expiryDate = loadExpiryDateFromUser();
+                    product.setExpiryDate(expiryDate);
+                    break;
+                case "quantity":
+                    System.out.println("Provide quantity");
+                    Double quantity = scanner.nextDouble();
+                    product.setQuantity(quantity);
+                    break;
+                default:
+                    System.out.println("field with this name is not handled");
+            }
+            dao.updateProduct(product);
+            System.out.println("product has been updated");
+        } else {
+            System.out.println("404 not found");
+        }
+    }
+
+    private void handleDeleteCommand() {
+        System.out.println("Provide the id of the product you want to delete");
+        Long id = scanner.nextLong();
+
+        Optional<Product> productOptional = dao.zwrocProduct(id);
+        if(productOptional.isPresent()){
+        Product product = productOptional.get();
+        dao.usunProduct(product);
+        System.out.println("removed");
+    } else {
+        System.out.println("404 not found");
+    }}
 
     private void handleListCommand() {
         List<Product> productList = dao.zwrocListeProducts();
