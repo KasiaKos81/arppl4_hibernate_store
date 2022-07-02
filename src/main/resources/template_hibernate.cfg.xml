@@ -6,9 +6,14 @@
     <session-factory>
         <property name="connection.url">jdbc:mysql://localhost:3306/arppl4_produkty?serverTomezone=Europe/Warsaw&amp;createDatabaseIfNotExist=true</property>
         <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
-        <property name="connection.username">root</property>
-        <property name="connection.password">root</property>
+        <property name="connection.username"/><!-- TODO: wypełnić nazwę użytkownika -->
+        <property name="connection.password"/> <!-- TODO: wypełnić hasło -->
 
+        <!-- Generuje tabele i kolumny w bazie danych -->
+        <!-- update działa przyrostowo - jeśli brakuje kolumny lub tabeli, dodaj ją -->
+        <!-- create - usunie bazę danych przed uruchomieniem i postawi ją od zera na nowo -->
+        <!-- create-drop - postawi ją od zera na now i przed zamknięciem programu usunie ją -->
+        <!-- validate - nic nie robi -->
         <property name="hibernate.hbm2ddl.auto">update</property>
 
         <!-- DB schema will be updated if needed -->
